@@ -41,7 +41,7 @@ def lowlight(image_path):
 	end_time = (time.time() - start)
 
 	print(end_time)
-	image_path = image_path.replace('test_data','result_Zero_DCE++')
+	image_path = image_path.replace('my_data','result_Zero_DCE++')
 
 	result_path = image_path
 	if not os.path.exists(image_path.replace('/'+image_path.split("/")[-1],'')):
@@ -54,11 +54,11 @@ if __name__ == '__main__':
 
 	with torch.no_grad():
 
-		filePath = 'data/test_data/'	
+		filePath = 'data/my_data/'
 		file_list = os.listdir(filePath)
 		sum_time = 0
 		for file_name in file_list:
-			test_list = glob.glob(filePath+file_name+"/*") 
+			test_list = glob.glob(filePath+file_name+"/*")
 		for image in test_list:
 
 				print(image)
