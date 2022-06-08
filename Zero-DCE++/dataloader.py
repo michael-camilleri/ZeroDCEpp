@@ -51,7 +51,7 @@ class StructuredLoader(tud.Dataset):
 	This is a data loader designed to work with my Folder Structure.
 	It assumes that images are numbered sequentially from 0 up to some maximum number
 	"""
-	def __init__(self, images, scaling, fmt='*.jpg'):
+	def __init__(self, images, scaling, downsampling, fmt='*.jpg'):
 		"""
 		Initialise the DataSet
 
@@ -59,7 +59,7 @@ class StructuredLoader(tud.Dataset):
 		"""
 		# Initialise Directory Structure
 		self.__images_pths = [
-			imgs for pth in os.listdir(images) for imgs in glob.glob(os.path.join(images, pth, fmt))
+			img for pth in os.listdir(images) for img in glob.glob(os.path.join(images, pth, fmt))[::downsampling]
 		]
 		self.__scaling = scaling
 		print("Total Data Examples:", len(self.__images_pths))

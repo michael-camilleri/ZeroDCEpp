@@ -19,7 +19,7 @@ def train(cfg):
     # DCE_net.apply(weights_init)
     if cfg.pretrain_model is not None:
         DCE_net.load_state_dict(torch.load(cfg.pretrain_model))
-    dataset = dataloader.StructuredLoader(cfg.images, cfg.scale_factor)
+    dataset = dataloader.StructuredLoader(cfg.images, cfg.scale_factor, cfg.downsampling)
     v_len = int(cfg.validation_ratio * len(dataset))
     t_len = len(dataset) - v_len
     print(f'Training on {t_len} and evaluating on {v_len}.')
@@ -102,12 +102,13 @@ if __name__ == "__main__":
         default="/media/veracrypt4/Q1/Snippets/Curated/Behaviour/Train/Frames_Raw"
     )
     parser.add_argument('--validation_ratio', type=float, default=0.3)
+    parser.add_argument('--downsampling', type=int, default=5)
     parser.add_argument('--lr', type=float, default=0.00001)
     parser.add_argument('--weight_decay', type=float, default=0.0001)
     parser.add_argument('--grad_clip_norm', type=float, default=0.1)
     parser.add_argument('--num_epochs', type=int, default=20)
     parser.add_argument('--batch_size', type=int, default=8)
-    parser.add_argument('--num_workers', type=int, default=4)
+    parser.add_argument('--num_workers', type=int, default=2)
     parser.add_argument('--display_iter', type=int, default=50)
     parser.add_argument('--scale_factor', type=int, default=12)
     parser.add_argument('--random_seed', type=int, default=101)
