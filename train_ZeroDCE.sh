@@ -42,6 +42,7 @@ LR=${7}
 MAX_EPOCHS=${8}
 
 # Derivative Values
+MODEL_PTH="${HOME}/models/ZeroDCE/Base/${PRETRAIN}"
 OUT_NAME=B${BATCH_SIZE}_L${LR}_R${RAND_SEED}_S${SCALING}
 
 # Path Values
@@ -68,7 +69,7 @@ echo " Training Model (${OUT_NAME})"
 mkdir -p "${OUT_DIR}"
 python Zero-DCE++/lowlight_train.py \
   --images ${DATA_DIR} --validation_ratio ${VALID_RATE} --random_seed ${RAND_SEED} \
-  --pretrain_model ${PRETRAIN} --scale_factor ${SCALING} --snapshots_folder ${OUT_DIR} \
+  --pretrain_model ${MODEL_PTH} --scale_factor ${SCALING} --snapshots_folder ${OUT_DIR} \
   --batch_size ${BATCH_SIZE} --lr ${LR} --num_epochs ${MAX_EPOCHS}
 echo "   == Training Done =="
 echo ""
