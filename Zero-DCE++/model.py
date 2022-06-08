@@ -49,7 +49,7 @@ class enhance_net_nopool(nn.Module):
 		self.e_conv6 = CSDN_Tem(number_f*2,number_f) 
 		self.e_conv7 = CSDN_Tem(number_f*2,3) 
 
-	def enhance(self, x,x_r):
+	def enhance(self, x, x_r):
 
 		x = x + x_r*(torch.pow(x,2)-x)
 		x = x + x_r*(torch.pow(x,2)-x)
@@ -74,7 +74,7 @@ class enhance_net_nopool(nn.Module):
 		x4 = self.relu(self.e_conv4(x3))
 		x5 = self.relu(self.e_conv5(torch.cat([x3,x4],1)))
 		x6 = self.relu(self.e_conv6(torch.cat([x2,x5],1)))
-		x_r = F.tanh(self.e_conv7(torch.cat([x1,x6],1)))
+		x_r = torch.tanh(self.e_conv7(torch.cat([x1,x6],1)))
 		if self.scale_factor==1:
 			x_r = x_r
 		else:
