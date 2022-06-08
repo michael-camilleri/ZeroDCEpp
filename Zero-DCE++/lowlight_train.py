@@ -7,6 +7,7 @@ import dataloader
 import model
 import Myloss
 import numpy as np
+from tqdm import tqdm
 
 
 def train(cfg):
@@ -45,7 +46,7 @@ def train(cfg):
         # First Train
         DCE_net.train()
         epoch_loss = 0
-        for b_id, batch in enumerate(train_loader):
+        for b_id, batch in enumerate(tqdm(train_loader, miniters=cfg.display_iter)):
             b_id += 1; batch = batch.cuda(); E = 0.6
             enhanced_image, A = DCE_net(batch)
 
@@ -59,20 +60,17 @@ def train(cfg):
 
             optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm(DCE_net.parameters(), cfg.grad_clip_norm)
+            torch.nn.utils.clip_grad_norm_(DCE_net.parameters(), cfg.grad_clip_norm)
             optimizer.step()
 
-            if (b_id % cfg.display_iter) == 0:
-                print(f"Iteration Loss: [{epoch}][{b_id}]: {loss.item()}")
-
         # Record Batch Loss
-        print(f'Batch Loss: Training: [{epoch}]: {epoch_loss}')
+        print(f'\rBatch Loss: Training: [{epoch}]: {epoch_loss}')
 
         # Now Evaluate
         DCE_net.eval()
         with torch.no_grad():
             epoch_loss = 0
-            for batch in valid_loader:
+            for batch in tqdm(valid_loader, miniters=cfg.display_iter):
                 batch = batch.cuda(); E = 0.6
                 enhanced_image, A = DCE_net(batch)
                 Loss_TV = 1600 * L_TV(A)
@@ -81,7 +79,7 @@ def train(cfg):
                 # loss_col = 5 * torch.mean(L_color(enhanced_image))
                 epoch_loss += (Loss_TV + loss_spa + loss_exp).item() # + loss_col
 
-            print(f'Batch Loss: Validation: [{epoch}]: {epoch_loss}')
+            print(f'\rBatch Loss: Validation: [{epoch}]: {epoch_loss}')
 
             if epoch_loss < best_model:
                 print(f'Found new best Validation Loss: Storing Model.')
@@ -108,9 +106,9 @@ if __name__ == "__main__":
     parser.add_argument('--weight_decay', type=float, default=0.0001)
     parser.add_argument('--grad_clip_norm', type=float, default=0.1)
     parser.add_argument('--num_epochs', type=int, default=20)
-    parser.add_argument('--batch_size', type=int, default=4)
+    parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--num_workers', type=int, default=4)
-    parser.add_argument('--display_iter', type=int, default=20)
+    parser.add_argument('--display_iter', type=int, default=50)
     parser.add_argument('--scale_factor', type=int, default=12)
     parser.add_argument('--random_seed', type=int, default=101)
     parser.add_argument(
