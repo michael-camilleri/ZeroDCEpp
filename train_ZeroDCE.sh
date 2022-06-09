@@ -55,7 +55,7 @@ OUT_DIR="${HOME}/models/ZeroDCE/Trained/${OUT_NAME}/"
 # Environment setup
 # ===================
 echo "Setting up Conda enviroment on ${SLURM_JOB_NODELIST}: Config=${OUT_NAME}"
-echo "Using configuration: ${OUT_NAME}, with ${FRAMES_DIR} images and ${PATH_OFFSET} data split."
+echo "Using configuration: ${OUT_NAME}, with ${FRAMES_DIR} images."
 set -e # Make script bail out after first error
 source activate py3rtx   # Activate Conda Environment
 echo "Libraries from: ${LD_LIBRARY_PATH}"
