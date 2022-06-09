@@ -62,7 +62,6 @@ class StructuredLoader(tud.Dataset):
 			img for pth in os.listdir(images) for img in glob.glob(os.path.join(images, pth, fmt))[::downsampling]
 		]
 		self.__scaling = scaling
-		print("Total Data Examples:", len(self.__images_pths))
 
 	def __getitem__(self, index):
 		# Get Image

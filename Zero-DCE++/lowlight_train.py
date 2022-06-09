@@ -18,11 +18,13 @@ def train(cfg):
     # === Setup Model === #
     # DCE_net.apply(weights_init)
     if cfg.pretrain_model is not None:
+        print('Initialising Pre-Trained Model')
         DCE_net.load_state_dict(torch.load(cfg.pretrain_model))
+    print('Loading Dataset ... ')
     dataset = dataloader.StructuredLoader(cfg.images, cfg.scale_factor, cfg.downsampling)
     v_len = int(cfg.validation_ratio * len(dataset))
     t_len = len(dataset) - v_len
-    print(f'Training on {t_len} and evaluating on {v_len}.')
+    print(f'DataSet Size: {len(dataset)}. Training on {t_len} and evaluating on {v_len}.')
     train_ds, valid_ds = tud.random_split(
         dataset, [t_len, v_len], generator=torch.Generator().manual_seed(cfg.random_seed)
     )
