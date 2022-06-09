@@ -72,7 +72,8 @@ mkdir -p "${OUT_DIR}"
 python Zero-DCE++/lowlight_train.py \
   --images ${DATA_DIR} --validation_ratio ${VALID_RATE} --random_seed ${RAND_SEED} --downsampling ${DOWNSAMPLE} \
   --pretrain_model ${MODEL_PTH} --scale_factor ${SCALING} --snapshots_folder ${OUT_DIR} \
-  --batch_size ${BATCH_SIZE} --lr ${LR} --num_epochs ${MAX_EPOCHS}
+  --batch_size ${BATCH_SIZE} --lr ${LR} --num_epochs ${MAX_EPOCHS} \
+  --display_iter 50 --snapshot_iter 1
 echo "   == Training Done =="
 echo ""
 
