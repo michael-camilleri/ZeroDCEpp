@@ -34,7 +34,8 @@ def train(cfg):
     )
 
     # === Setup Loss Functions ===
-    #  Note that I have removed the color loss: L_color = Myloss.L_color()
+    #  Note that I have removed the color loss:
+    L_color = Myloss.L_color()
     L_spa = Myloss.L_spa()
     L_exp = Myloss.L_exp(16)
     L_TV = Myloss.L_TV()
@@ -46,7 +47,7 @@ def train(cfg):
         # First Train
         DCE_net.train()
         epoch_loss = 0
-        for b_id, batch in enumerate(tqdm(train_loader, miniters=cfg.display_iter)):
+        for b_id, batch in enumerate(tqdm(train_loader, miniters=cfg.display_iter, maxinterval=60)):
             b_id += 1; batch = batch.cuda(); E = 0.6
             enhanced_image, A = DCE_net(batch)
 
@@ -54,8 +55,8 @@ def train(cfg):
             Loss_TV = 1600 * L_TV(A)
             loss_spa = torch.mean(L_spa(enhanced_image, batch))
             loss_exp = 10 * torch.mean(L_exp(enhanced_image, E))
-            # loss_col = 5 * torch.mean(L_color(enhanced_image))
-            loss = Loss_TV + loss_spa + loss_exp # + loss_col
+            loss_col = 5 * torch.mean(L_color(enhanced_image))
+            loss = Loss_TV + loss_spa + loss_exp + loss_col
             epoch_loss += loss.item()
 
             optimizer.zero_grad()
@@ -66,18 +67,24 @@ def train(cfg):
         # Record Batch Loss
         print(f'\rBatch Loss: Training: [{epoch}]: {epoch_loss}')
 
+        # Store Model
+        if (cfg.snapshot_iter is not None) and (epoch % cfg.snapshot_iter == 0):
+            torch.save(
+                DCE_net.state_dict(), os.path.join(cfg.snapshots_folder, f"epoch_{epoch:02d}.pth")
+            )
+
         # Now Evaluate
         DCE_net.eval()
         with torch.no_grad():
             epoch_loss = 0
-            for batch in tqdm(valid_loader, miniters=cfg.display_iter):
+            for batch in tqdm(valid_loader, miniters=cfg.display_iter, maxinterval=60):
                 batch = batch.cuda(); E = 0.6
                 enhanced_image, A = DCE_net(batch)
                 Loss_TV = 1600 * L_TV(A)
                 loss_spa = torch.mean(L_spa(enhanced_image, batch))
                 loss_exp = 10 * torch.mean(L_exp(enhanced_image, E))
-                # loss_col = 5 * torch.mean(L_color(enhanced_image))
-                epoch_loss += (Loss_TV + loss_spa + loss_exp).item() # + loss_col
+                loss_col = 5 * torch.mean(L_color(enhanced_image))
+                epoch_loss += (Loss_TV + loss_spa + loss_exp + loss_col).item() #
 
             print(f'\rBatch Loss: Validation: [{epoch}]: {epoch_loss}')
 
@@ -110,6 +117,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--num_workers', type=int, default=2)
     parser.add_argument('--display_iter', type=int, default=50)
+    parser.add_argument('--snapshot_iter', type=int, default=None)
     parser.add_argument('--scale_factor', type=int, default=12)
     parser.add_argument('--random_seed', type=int, default=101)
     parser.add_argument(
