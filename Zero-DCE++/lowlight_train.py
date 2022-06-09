@@ -37,7 +37,7 @@ def train(cfg):
 
     # === Setup Loss Functions ===
     #  Note that I have removed the color loss:
-    L_color = Myloss.L_color()
+    # L_color = Myloss.L_color()
     L_spa = Myloss.L_spa()
     L_exp = Myloss.L_exp(16)
     L_TV = Myloss.L_TV()
@@ -57,8 +57,8 @@ def train(cfg):
             Loss_TV = 1600 * L_TV(A)
             loss_spa = torch.mean(L_spa(enhanced_image, batch))
             loss_exp = 10 * torch.mean(L_exp(enhanced_image, E))
-            loss_col = 5 * torch.mean(L_color(enhanced_image))
-            loss = Loss_TV + loss_spa + loss_exp + loss_col
+            # loss_col = 5 * torch.mean(L_color(enhanced_image))
+            loss = Loss_TV + loss_spa + loss_exp # + loss_col
             epoch_loss += loss.item()
 
             optimizer.zero_grad()
@@ -85,8 +85,8 @@ def train(cfg):
                 Loss_TV = 1600 * L_TV(A)
                 loss_spa = torch.mean(L_spa(enhanced_image, batch))
                 loss_exp = 10 * torch.mean(L_exp(enhanced_image, E))
-                loss_col = 5 * torch.mean(L_color(enhanced_image))
-                epoch_loss += (Loss_TV + loss_spa + loss_exp + loss_col).item() #
+                # loss_col = 5 * torch.mean(L_color(enhanced_image))
+                epoch_loss += (Loss_TV + loss_spa + loss_exp).item() #  + loss_col
 
             print(f'\rBatch Loss: Validation: [{epoch}]: {epoch_loss}')
 
