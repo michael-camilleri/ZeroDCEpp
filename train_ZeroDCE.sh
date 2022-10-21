@@ -45,7 +45,7 @@ MAX_EPOCHS=${9}
 
 # Derivative Values
 MODEL_PTH="${HOME}/models/ZeroDCE/Base/${PRETRAIN}"
-OUT_NAME=B${BATCH_SIZE}_L${LR}_R${RAND_SEED}_S${SCALING}_wC
+OUT_NAME=B${BATCH_SIZE}_L${LR}_R${RAND_SEED}_S${SCALING}
 
 # Path Values
 DATA_DIR=/disk/scratch/${USER}/data/behaviour/${FRAMES_DIR}
